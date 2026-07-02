@@ -91,6 +91,8 @@ notebook/21-merge-two-sorted-lists.md
 
 `notebook/` 默认不会提交到 Git，用户可以把它作为自己的私人错题本。
 
+可以先查看项目中的[公开示例错题卡](examples/sample_review.md)，了解最终输出效果。
+
 ## 手动生成错题卡
 
 不使用 LLM 时，也可以手动提供复盘内容：
@@ -147,4 +149,4 @@ python3 -m pytest
 
 ## License
 
-License 尚未添加，将在首次公开发布前确定。
+本项目使用 [MIT License](LICENSE)。
