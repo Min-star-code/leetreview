@@ -31,27 +31,26 @@ struct ListNode* mergeTwoLists(struct ListNode* list1, struct ListNode* list2) {
 
 ## AI Review
 
-### 代码结论
+### Verdict
 
-代码思路正确，使用了合并两个有序链表的标准迭代方法：双指针、哑节点和尾指针。
+The solution is correct and uses the standard iterative merge technique with two input pointers, a dummy node, and a tail pointer.
 
-### 当前思路
+### Current Approach
 
-每次比较两个链表当前节点的值，把较小节点连接到结果链表尾部。当一个链表遍历结束后，将另一个链表的剩余部分直接接上。
+Compare the current nodes of both lists and append the smaller one to the result. Once one list is exhausted, append the remaining part of the other list.
 
-### 复杂度分析
+### Complexity Analysis
 
-- 时间复杂度：`O(m + n)`
-- 空间复杂度：`O(1)`
+- Time complexity: `O(m + n)`
+- Space complexity: `O(1)`
 
-### 知识点卡片
+### Knowledge Card
 
-- 哑节点可以统一处理结果链表的头节点。
-- 尾指针用于持续连接新节点。
-- 该过程与归并排序中的 merge 步骤相同。
-- 直接复用原链表节点可以保持常数额外空间。
+- A dummy node removes special handling for the result head.
+- A tail pointer keeps appending nodes efficient and clear.
+- The process mirrors the merge step in merge sort.
+- Reusing the original nodes keeps auxiliary space constant.
 
-### 下次提醒
+### Next-Time Reminder
 
-遇到链表合并、插入或删除问题时，先考虑能否使用哑节点简化边界情况。
-
+For linked-list merge, insertion, or deletion problems, consider whether a dummy node can simplify edge cases.

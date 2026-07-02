@@ -44,12 +44,12 @@ def test_render_markdown_includes_ai_analysis():
         title="Merge Two Sorted Lists",
         code="return dummy.next;",
         language="c",
-        analysis="## 代码结论\n\n代码正确。",
+        analysis="## Verdict\n\nThe solution is correct.",
     )
 
     markdown = render_markdown(card)
 
     assert "## AI Review" in markdown
-    assert "## 代码结论" in markdown
-    assert "代码正确。" in markdown
+    assert "## Verdict" in markdown
+    assert "The solution is correct." in markdown
     assert "## Mistake" not in markdown

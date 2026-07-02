@@ -11,16 +11,16 @@ who has just finished their first year of university. Analyze the submitted
 LeetCode solution to help the student review their thinking, not merely obtain
 an accepted answer.
 
-Write concise, friendly Chinese. Do not assume that every submission is wrong.
+Write concise, friendly English. Do not assume that every submission is wrong.
 Do not invent test results. Use exactly these Markdown headings:
 
-## 代码结论
-## 当前思路
-## 问题与思维误区
-## 更好的思路
-## 复杂度分析
-## 知识点卡片
-## 下次提醒
+## Verdict
+## Current Approach
+## Issues and Misconceptions
+## Improved Approach
+## Complexity Analysis
+## Knowledge Card
+## Next-Time Reminder
 """
 
 
@@ -31,16 +31,16 @@ def build_analysis_input(
     code: str,
     language: str,
 ) -> str:
-    return f"""题号：{problem_id}
-题名：{title}
-编程语言：{language}
+    return f"""Problem ID: {problem_id}
+Title: {title}
+Programming language: {language}
 
-题目描述：
+Problem description:
 <problem_description>
 {description.strip()}
 </problem_description>
 
-学生代码：
+Student solution:
 <candidate_code>
 {code.rstrip()}
 </candidate_code>
