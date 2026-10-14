@@ -201,19 +201,40 @@ and 3 fail because the same index is used twice):
 }
 ```
 
-### Example Trace (Illustrative)
+### Example Run
 
-This trace shows how one run could go on the included example. It is written by
-hand to explain the loop and is not a recording of a real run. Only the
-`run_tests` result above is real output. Because the LLM chooses the tools, the
-order and the number of turns can differ from run to run.
+This is a real run of the command above with `gpt-5.4-mini` on 2026-10-13. The
+command printed:
 
 ```text
-Turn 1  LLM asks for: run_tests
-        Tool result:  2 passed, 2 failed (cases 2 and 3 return [0, 0])
-Turn 2  LLM asks for: search_notebook(keyword="two sum")
-        Tool result:  [] (no earlier cards yet)
-Turn 3  LLM writes the final review; the loop ends and the card is saved
+Agent finished in 2 turns. Tools called: run_tests
+Saved agent review card: notebook/1-two-sum.md
+```
+
+```text
+Turn 1  LLM asked for: run_tests
+        Tool result:   2 passed, 2 failed (cases 2 and 3 returned [0, 0])
+Turn 2  LLM wrote the final review; the loop ended and the card was saved
+```
+
+In this run the LLM chose not to call `search_notebook` or `read_card`, and its
+review says so ("I did not search your notebook for related cards"). Because
+the LLM chooses the tools, other runs can use different tools and take a
+different number of turns. The full card from this run is saved as
+[examples/sample_agent_review.md](examples/sample_agent_review.md). Its test
+results section reads:
+
+```markdown
+## Test Results
+Passed:
+- `[2, 7, 11, 15], target = 9` → `[0, 1]`
+- `[-1, -2, -3, -4, -5], target = -8` → `[2, 4]`
+
+Failed:
+- `[3, 2, 4], target = 6`
+  Expected `[1, 2]`, got `[0, 0]`
+- `[3, 3], target = 6`
+  Expected `[0, 1]`, got `[0, 0]`
 ```
 
 ### Limitations

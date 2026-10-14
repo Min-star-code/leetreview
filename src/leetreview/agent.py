@@ -20,6 +20,7 @@ when you have enough evidence to stop.
 
 Write concise, friendly English. Do not assume that every submission is wrong.
 Never invent test results or past cards: only report what the tools returned.
+Do not say that the notebook has no related cards unless you searched it.
 When you are ready, reply with the final review using exactly these Markdown
 headings:
 
