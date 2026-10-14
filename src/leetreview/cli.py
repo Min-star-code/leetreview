@@ -3,8 +3,17 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from leetreview.llm import analyze_solution, check_api_connection
+from openai import AuthenticationError, RateLimitError
+
+from leetreview.agent import MAX_TURNS, run_agent
+from leetreview.llm import (
+    _load_client_and_model,
+    analyze_solution,
+    build_analysis_input,
+    check_api_connection,
+)
 from leetreview.notebook import ReviewCard, save_review_card
+from leetreview.tools import build_tools
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -34,6 +43,27 @@ def build_parser() -> argparse.ArgumentParser:
         default=Path("notebook"),
         type=Path,
         help="Directory for the generated AI review card.",
+    )
+
+    review_parser = subparsers.add_parser(
+        "review",
+        help="Review a Python solution with an agent that can run tests.",
+    )
+    review_parser.add_argument("--problem-id", required=True)
+    review_parser.add_argument("--title", required=True)
+    review_parser.add_argument("--description-file", required=True, type=Path)
+    review_parser.add_argument("--code-file", required=True, type=Path)
+    review_parser.add_argument(
+        "--tests-file",
+        required=True,
+        type=Path,
+        help="JSON file with the method name and test cases.",
+    )
+    review_parser.add_argument(
+        "--output-dir",
+        default=Path("notebook"),
+        type=Path,
+        help="Notebook directory to search and to save the new card in.",
     )
 
     new_parser = subparsers.add_parser("new", help="Create a new review card.")
@@ -113,6 +143,46 @@ def handle_analyze(args: argparse.Namespace) -> Path:
     return save_review_card(card, args.output_dir)
 
 
+def handle_review(args: argparse.Namespace) -> Path:
+    description = args.description_file.read_text(encoding="utf-8")
+    code = args.code_file.read_text(encoding="utf-8")
+    client, model = _load_client_and_model()
+    review_input = build_analysis_input(
+        problem_id=args.problem_id,
+        title=args.title,
+        description=description,
+        code=code,
+        language="python",
+    )
+    tools = build_tools(args.code_file, args.tests_file, args.output_dir)
+
+    try:
+        result = run_agent(client, model, review_input, tools)
+    except AuthenticationError as error:
+        raise RuntimeError("The OpenAI API key is invalid.") from error
+    except RateLimitError as error:
+        raise RuntimeError(
+            "The OpenAI account has no available API quota. Check billing and usage."
+        ) from error
+
+    tool_names = ", ".join(result.tool_calls) or "none"
+    if not result.finished:
+        raise RuntimeError(
+            f"The agent reached the limit of {MAX_TURNS} turns without a "
+            f"final review. Tools called: {tool_names}"
+        )
+
+    print(f"Agent finished in {result.turns} turns. Tools called: {tool_names}")
+    card = ReviewCard(
+        problem_id=args.problem_id,
+        title=args.title,
+        code=code,
+        language="python",
+        analysis=result.review,
+    )
+    return save_review_card(card, args.output_dir)
+
+
 def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
@@ -131,6 +201,12 @@ def main() -> None:
             print(f"Saved AI review card: {output_path}")
         except RuntimeError as error:
             parser.exit(status=1, message=f"Analysis failed: {error}\n")
+    elif args.command == "review":
+        try:
+            output_path = handle_review(args)
+            print(f"Saved agent review card: {output_path}")
+        except RuntimeError as error:
+            parser.exit(status=1, message=f"Review failed: {error}\n")
 
 
 if __name__ == "__main__":
