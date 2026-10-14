@@ -201,6 +201,21 @@ and 3 fail because the same index is used twice):
 }
 ```
 
+### Example Trace (Illustrative)
+
+This trace shows how one run could go on the included example. It is written by
+hand to explain the loop and is not a recording of a real run. Only the
+`run_tests` result above is real output. Because the LLM chooses the tools, the
+order and the number of turns can differ from run to run.
+
+```text
+Turn 1  LLM asks for: run_tests
+        Tool result:  2 passed, 2 failed (cases 2 and 3 return [0, 0])
+Turn 2  LLM asks for: search_notebook(keyword="two sum")
+        Tool result:  [] (no earlier cards yet)
+Turn 3  LLM writes the final review; the loop ends and the card is saved
+```
+
 ### Limitations
 
 - `run_tests` runs the solution on your own machine. The separate process and
