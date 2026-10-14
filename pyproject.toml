@@ -5,7 +5,7 @@ description = "A Python CLI for generating LeetCode mistake-review Markdown card
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
-  { name = "Your Name" }
+  { name = "Mincheng Li" }
 ]
 dependencies = [
   "openai>=2.0.0",
