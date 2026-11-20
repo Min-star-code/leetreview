@@ -4,6 +4,19 @@ LeetReview is a Python CLI that turns LeetCode attempts into personalized Markdo
 
 Given a problem description and a student's solution, LeetReview analyzes the approach, identifies possible misconceptions, explains complexity, extracts reusable concepts, and saves the result as a local mistake notebook entry.
 
+```mermaid
+flowchart LR
+    A[Problem + Python solution<br/>+ test cases] --> B[LLM<br/>OpenAI API]
+    B -- asks for a tool --> T{{run_tests · search_notebook · read_card}}
+    T -- result or error --> B
+    B -- final review --> C[Markdown study card<br/>notebook/]
+    B -. after 6 turns .-> X[Stop, no card saved]
+```
+
+*The LLM decides which tool to call next; the code only runs the tool and enforces the 6-turn limit.
+In the real run shown under [Example Run](#example-run), it called `run_tests` once (2 passed,
+2 failed) and then wrote the review.*
+
 ## Features
 
 - Reads the problem id, title, description, and solution file
